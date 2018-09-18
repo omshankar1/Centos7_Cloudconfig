@@ -1,0 +1,8 @@
+<network>
+<name>virbr2</name>
+<bridge name='virbr2' stp='on' delay='0' />
+<forward mode='nat'/>
+<mac address='52:54:00:00:00:02' />
+<ip address='192.168.2.10' netmask='255.255.255.0' />
+</network>
+
