@@ -3,26 +3,31 @@ manage_resolv_conf: true
 resolv_conf:
   nameservers: ['8.8.4.4', '8.8.8.8']
 
-
-password: root123                                                                    
-chpasswd:
-  list: |
-    root:root123
-  expire: False
-ssh_pwauth: True
-
 network: {config: disabled}
 # Hostname management
 preserve_hostname: False
-hostname: shankar-test14
-fqdn: shankar-test14
+hostname: centos7-test14
+fqdn: centos7-test14
+
+users:
+  - name: "shankar"
+    groups:
+      - "sudo"
+    ssh-authorized-keys:
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCVR8MG7WnFVXoaPqyHApTbAC+x7MIt4ChaSihbuZi+CqkuuuszplsV2Px+is6cSrRbGB14uTg3XPPuL33YtKfvYjQTThiCiUz9F1FuUUKXhpNjRbvjfnF/zJFSmGJFOoUPN2gT2JzQfxtA29mFnklMK9iQyk43/X4sZkkRV/HoWPoA/If1+Q92rKB+miKqONwRuEdUOZxXwqva484/9SwvKtEUmemA4OLMVa8JMzbnkZbf+sqDK2GTTtaa3odOj6Z39cI7jf2Z8hrbdEdRZkB92qVINopI4eEqHvtdhGCgxOZ6Q6EAtzQsb2WPDqyJglN63UPy35pkxaXZaaxt/6DV shankar@shankar-TP"
+
+packages:
+  - yum-utils
+  - wget
+  - git
+  - vim-enhanced
 
 bootcmd:
   - set -x; echo '#user-data/bootcmd:' >> /etc/sysconfig/network-scripts/ifcfg-ens2
   - set -x; sed -i -e '/^BOOTPROTO/ s/dhcp/static/g' -e '/PERSISTENT_DHCLIENT/d' /etc/sysconfig/network-scripts/ifcfg-ens2
   - set -x; echo 'IPADDR=192.168.1.14' >> /etc/sysconfig/network-scripts/ifcfg-ens2
   - set -x; echo 'NETMASK=255.255.255.0' >> /etc/sysconfig/network-scripts/ifcfg-ens2
-  - set -x; echo 'GATEWAY=192.168.1.10' >> /etc/sysconfig/network-scripts/ifcfg-ens2
+  - set -x; echo 'GATEWAY=192.168.1.1' >> /etc/sysconfig/network-scripts/ifcfg-ens2
   - set -x; echo 'DNS1=8.8.8.8' >> /etc/sysconfig/network-scripts/ifcfg-ens2
   - set -x; echo 'ONBOOT="yes"' >> /etc/sysconfig/network-scripts/ifcfg-ens2
   - set -x; echo 'NM_CONTROLLED=no' >> /etc/sysconfig/network-scripts/ifcfg-ens2
@@ -36,13 +41,6 @@ write_files:
    content: |
      #!/bin/bash -e
      setenforce 0
-     yum clean all
-     yum -y update
-     yum install -y yum-utils wget git
-     yum -y install https://repo.saltstack.com/yum/redhat/salt-repo-2016.3-2.el7.noarch.rpm
-     yum install -y salt-minion
-     systemctl enable salt-minion
-     systemctl restart salt-minion
      > /etc/sysconfig/network-scripts/ifcfg-eth0
      read MACens3 </sys/class/net/ens3/address
      echo '#user-data/bootcmd:' >> /etc/sysconfig/network-scripts/ifcfg-ens3
@@ -51,7 +49,7 @@ write_files:
 
      echo 'IPADDR=192.168.2.14' >> /etc/sysconfig/network-scripts/ifcfg-ens3
      echo 'NETMASK=255.255.255.0' >> /etc/sysconfig/network-scripts/ifcfg-ens3
-     echo 'GATEWAY=192.168.2.10' >> /etc/sysconfig/network-scripts/ifcfg-ens3
+     echo 'GATEWAY=192.168.2.1' >> /etc/sysconfig/network-scripts/ifcfg-ens3
      echo 'DNS1=8.8.8.8' >> /etc/sysconfig/network-scripts/ifcfg-ens3
      echo 'ONBOOT="yes"' >> /etc/sysconfig/network-scripts/ifcfg-ens3
      echo 'NM_CONTROLLED=no' >> /etc/sysconfig/network-scripts/ifcfg-ens3
