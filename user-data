@@ -12,7 +12,9 @@ fqdn: centos7-test14
 users:
   - name: "shankar"
     groups:
-      - "sudo"
+      - sudo
+      - wheel
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
     ssh-authorized-keys:
       - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCVR8MG7WnFVXoaPqyHApTbAC+x7MIt4ChaSihbuZi+CqkuuuszplsV2Px+is6cSrRbGB14uTg3XPPuL33YtKfvYjQTThiCiUz9F1FuUUKXhpNjRbvjfnF/zJFSmGJFOoUPN2gT2JzQfxtA29mFnklMK9iQyk43/X4sZkkRV/HoWPoA/If1+Q92rKB+miKqONwRuEdUOZxXwqva484/9SwvKtEUmemA4OLMVa8JMzbnkZbf+sqDK2GTTtaa3odOj6Z39cI7jf2Z8hrbdEdRZkB92qVINopI4eEqHvtdhGCgxOZ6Q6EAtzQsb2WPDqyJglN63UPy35pkxaXZaaxt/6DV shankar@shankar-TP"
 

@@ -1,5 +1,5 @@
 # Centos7_Cloudconfig
-Bring up an Centos7 with two interfaces on a KVM environment using CloudInit
+Bring up an Centos7 on a KVM 
 
 
 Creating linux bridges
@@ -59,4 +59,20 @@ shankar@shankar-TP:~/KVM/CENTOS/instance1$ virsh list --all
  Id    Name                           State
 ----------------------------------------------------
  5     centos14                       running
+```
+
+To view the cloud-init log
+
+```console
+[shankar@centos7-test14 ~]$ sudo tail -f /var/log/cloud-init.log
+2018-09-24 03:58:00,612 - util.py[DEBUG]: Restoring selinux mode for /var/lib/cloud/instances/instance-1/sem/config_power_state_change (recursive=False)
+2018-09-24 03:58:00,612 - helpers.py[DEBUG]: Running config-power-state-change using lock (<FileLock using file '/var/lib/cloud/instances/instance-1/sem/config_power_state_change'>)
+2018-09-24 03:58:00,612 - cc_power_state_change.py[DEBUG]: no power_state provided. doing nothing
+2018-09-24 03:58:00,612 - handlers.py[DEBUG]: finish: modules-final/config-power-state-change: SUCCESS: config-power-state-change ran successfully
+2018-09-24 03:58:00,612 - main.py[DEBUG]: Ran 10 modules with 0 failures
+2018-09-24 03:58:00,613 - util.py[DEBUG]: Creating symbolic link from '/run/cloud-init/result.json' => '../../var/lib/cloud/data/result.json'
+2018-09-24 03:58:00,613 - util.py[DEBUG]: Reading from /proc/uptime (quiet=False)
+2018-09-24 03:58:00,613 - util.py[DEBUG]: Read 14 bytes from /proc/uptime
+2018-09-24 03:58:00,613 - util.py[DEBUG]: cloud-init mode 'modules' took 4.405 seconds (4.41)
+2018-09-24 03:58:00,613 - handlers.py[DEBUG]: finish: modules-final: SUCCESS: running modules for final
 ```
