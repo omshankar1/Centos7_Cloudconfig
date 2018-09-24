@@ -76,3 +76,8 @@ To view the cloud-init log
 2018-09-24 03:58:00,613 - util.py[DEBUG]: cloud-init mode 'modules' took 4.405 seconds (4.41)
 2018-09-24 03:58:00,613 - handlers.py[DEBUG]: finish: modules-final: SUCCESS: running modules for final
 ```
+
+We can use the exact same user-data and embed into CFN like in the script ec2_centos7_cloudconfig.yaml to 
+provision centos7. I have commented out the parts that configures the ip interfaces.
+I would need to indicate in the CFN the private  ip address for the first interface.
+Also, I wouldn need to add an extra interface and attach it to the ec2 instance before I can run the complete user-data part
