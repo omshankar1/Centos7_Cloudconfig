@@ -1,0 +1,107 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Start an ec2-instance
+
+Parameters: 
+  keyName:
+    Description: Key name
+    Type: AWS::EC2::KeyPair::KeyName
+  ImageId:
+    Description: Centos 7 image id
+    Type: AWS::EC2::Image::Id
+
+Resources: 
+  InstanceSecGrp:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription:  Enable SSH
+      SecurityGroupIngress:
+      -  IpProtocol: tcp
+         FromPort: 22
+         ToPort: 22
+         CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: CloudConfig
+
+  Centos7Cloudconfig:
+    Type: AWS::EC2::Instance
+    Properties:
+      KeyName: 
+        Ref: keyName
+      ImageId: 
+        Ref: ImageId
+      InstanceType: t2.nano
+      Monitoring: false
+      SecurityGroups:
+      - Ref: InstanceSecGrp
+      UserData: 
+        Fn::Base64: !Sub |
+          #cloud-config
+          manage_resolv_conf: true
+          resolv_conf:
+            nameservers: ['8.8.4.4', '8.8.8.8']
+
+          network: {config: disabled}
+          # Hostname management
+          preserve_hostname: False
+          hostname: centos7-test14
+          fqdn: centos7-test14
+
+          users:
+            - name: "shankar"
+              groups:
+                - sudo
+                - wheel
+              sudo: ['ALL=(ALL) NOPASSWD:ALL']
+              ssh-authorized-keys:
+                - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCVR8MG7WnFVXoaPqyHApTbAC+x7MIt4ChaSihbuZi+CqkuuuszplsV2Px+is6cSrRbGB14uTg3XPPuL33YtKfvYjQTThiCiUz9F1FuUUKXhpNjRbvjfnF/zJFSmGJFOoUPN2gT2JzQfxtA29mFnklMK9iQyk43/X4sZkkRV/HoWPoA/If1+Q92rKB+miKqONwRuEdUOZxXwqva484/9SwvKtEUmemA4OLMVa8JMzbnkZbf+sqDK2GTTtaa3odOj6Z39cI7jf2Z8hrbdEdRZkB92qVINopI4eEqHvtdhGCgxOZ6Q6EAtzQsb2WPDqyJglN63UPy35pkxaXZaaxt/6DV shankar@shankar-TP"
+
+          packages:
+            - yum-utils
+            - wget
+            - git
+            - vim-enhanced
+
+          # bootcmd:
+          #   - set -x; echo '#user-data/bootcmd:' >> /etc/sysconfig/network-scripts/ifcfg-ens2
+          #   - set -x; sed -i -e '/^BOOTPROTO/ s/dhcp/static/g' -e '/PERSISTENT_DHCLIENT/d' /etc/sysconfig/network-scripts/ifcfg-ens2
+          #   - set -x; echo 'IPADDR=192.168.1.14' >> /etc/sysconfig/network-scripts/ifcfg-ens2
+          #   - set -x; echo 'NETMASK=255.255.255.0' >> /etc/sysconfig/network-scripts/ifcfg-ens2
+          #   - set -x; echo 'GATEWAY=192.168.1.1' >> /etc/sysconfig/network-scripts/ifcfg-ens2
+          #   - set -x; echo 'DNS1=8.8.8.8' >> /etc/sysconfig/network-scripts/ifcfg-ens2
+          #   - set -x; echo 'ONBOOT="yes"' >> /etc/sysconfig/network-scripts/ifcfg-ens2
+          #   - set -x; echo 'NM_CONTROLLED=no' >> /etc/sysconfig/network-scripts/ifcfg-ens2
+          #   - set -x; echo 'DEFROUTE=yes' >> /etc/sysconfig/network-scripts/ifcfg-ens2
+          #   - ifdown ens2
+          #   - ifup ens2
+
+
+          # write_files:
+          # - path: /root/runfile.sh
+          #   content: |
+          #     #!/bin/bash -e
+          #     setenforce 0
+          #     > /etc/sysconfig/network-scripts/ifcfg-eth0
+          #     read MACens3 </sys/class/net/ens3/address
+          #     echo '#user-data/bootcmd:' >> /etc/sysconfig/network-scripts/ifcfg-ens3
+          #     sed -i -e '/^BOOTPROTO/ s/dhcp/static/g' -e '/PERSISTENT_DHCLIENT/d' /etc/sysconfig/network-scripts/ifcfg-ens3
+          #     echo HWADDR=$MACens3 >> /etc/sysconfig/network-scripts/ifcfg-ens3
+
+          #     echo 'IPADDR=192.168.2.14' >> /etc/sysconfig/network-scripts/ifcfg-ens3
+          #     echo 'NETMASK=255.255.255.0' >> /etc/sysconfig/network-scripts/ifcfg-ens3
+          #     echo 'GATEWAY=192.168.2.1' >> /etc/sysconfig/network-scripts/ifcfg-ens3
+          #     echo 'DNS1=8.8.8.8' >> /etc/sysconfig/network-scripts/ifcfg-ens3
+          #     echo 'ONBOOT="yes"' >> /etc/sysconfig/network-scripts/ifcfg-ens3
+          #     echo 'NM_CONTROLLED=no' >> /etc/sysconfig/network-scripts/ifcfg-ens3
+          #     echo 'DEFROUTE=no' >> /etc/sysconfig/network-scripts/ifcfg-ens3
+          #     ifdown ens3
+          #     ifup ens3
+          #   permissions: '0700'
+
+          runcmd:
+          - systemctl disable NetworkManager
+          # - chmod a+x /root/runfile.sh
+
+      Tags:
+        - Key: Name
+          Value: CloudConfig
